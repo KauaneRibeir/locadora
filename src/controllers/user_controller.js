@@ -1,4 +1,4 @@
-import User from "../models/rented_model.jsjs";
+import User from "../models/user_model.js";
 import jwtService from "../services/jwt_service.js";
 
 export const store = async (req, res) => {

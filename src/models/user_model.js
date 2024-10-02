@@ -22,6 +22,18 @@ const userSchema = new db.Schema({
     required: true,
     default: "USU",
   },
+  phones: {
+type: Number,
+required: true,
+  },
+  addres: {
+type: String,
+required:true,
+},
+house_number: {
+type: Number,
+required: true
+},
 });
 
 // não precisa do next nas versões mais novas do mongoose
