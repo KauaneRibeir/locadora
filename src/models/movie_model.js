@@ -8,7 +8,7 @@ const movieSchema = new db.Schema({
     required: true,
   },
   release_date: {
-    type: String,
+    type: Number,
     required: true,
   },
   director:{

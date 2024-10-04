@@ -20,6 +20,7 @@ const router = Router();
 Onde está o check_token o usuario tem que estar logado
 tanto faz o nivel de acesso
 
+
 Onde está o check_role ai depende do nivel de acesso
 */
 router.post("/", check_token, check_role(["ADM"]), store); // Somente adm

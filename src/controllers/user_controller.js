@@ -52,8 +52,13 @@ export const destroy = async (req, res) => {
 export const signup = async (req, res) => {
   try {
     const user = await User.create({
+      nome: req.body.nome,
       email: req.body.email,
       password: req.body.password,
+      tipo: req.body.tipo,
+      phones: req.body.phones,
+      addres: req.body.addres,
+      house_number: req.body.house_number
     });
 
     const token = jwtService.generateAccessToken({

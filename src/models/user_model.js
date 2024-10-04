@@ -6,7 +6,7 @@ const userSchema = new db.Schema({
     type: String,
     required: true,
   },
-  email: {
+   email: {
     type: String,
     required: true,
     unique: true,
@@ -22,10 +22,10 @@ const userSchema = new db.Schema({
     required: true,
     default: "USU",
   },
-  phones: {
+  phones: [{
 type: Number,
 required: true,
-  },
+  }],
   addres: {
 type: String,
 required:true,
