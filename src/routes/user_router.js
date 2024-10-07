@@ -29,7 +29,7 @@ router.get("/:id", check_token, show);
 router.put("/:id", check_token, update);
 router.delete("/:id", check_token, destroy);
 
-router.post("/signup", via_cep, signup);
+router.post("/signup",  signup);
 router.post("/login", login);
 
 export default router;
