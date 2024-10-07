@@ -24,3 +24,4 @@ const cep_endereco = (req, res, next) => {
 }
 
 module.exports = cep_endereco
+

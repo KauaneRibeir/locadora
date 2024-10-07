@@ -25,3 +25,4 @@ classification:{
 const movie = db.model("movie", movieSchema);
 
 export default movie;
+

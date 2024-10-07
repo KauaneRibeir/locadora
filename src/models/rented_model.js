@@ -26,3 +26,4 @@ const rented = db.model("rented",rentedSchema);
 
 export default rented;
 
+
