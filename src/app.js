@@ -1,4 +1,5 @@
 import express from "express";
+import "dotenv/config.js";
 import "dotenv/config";
 import user_router from "./routes/user_router.js";
 import movie_router from "./routes/movie_router.js";
