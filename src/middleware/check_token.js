@@ -19,6 +19,7 @@ function check_token(req, res, next) {
   }
 
   next();
+
 }
 
 export default check_token; //Corrige export

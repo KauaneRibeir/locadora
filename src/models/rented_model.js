@@ -1,29 +1,12 @@
+import { Schema, model } from 'mongoose';
 
-import db from "../config/db.js";
-
-
-
-const rentedSchema = new db.Schema({
-    rente_by: {
-    type: String,
-    required: true,
-  },
-  movie_rented: {
-    type: Number,
-    required: true,
-  },
-  rent_date:{
-    type: Number,
-    required: true,
-  },
-  return_date:{
-    type:Number,
-    required: true,
-  }
+const rentedSchema = new Schema({
+  rented_by: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  movie_rented: { type: Schema.Types.ObjectId, ref: 'Movie', required: true },
+  rent_date: { type: Date, default: Date.now, required: true },
+  return_date: { type: Date, required: true }
 });
 
-const rented = db.model("rented",rentedSchema);
+const Rented = model('Rented', rentedSchema);
 
-export default rented;
-
-
+export default Rented;

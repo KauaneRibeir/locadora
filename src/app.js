@@ -1,16 +1,20 @@
 import express from "express";
-import "dotenv/config.js";
-import "dotenv/config";
-import user_router from "./routes/user_router.js";
-import movie_router from "./routes/movie_router.js";
-import rented_router from "./routes/rented_router.js";
+import connectDB from "./config/db.js";
+import userRoutes from "./routes/user_router.js";
+import movieRoutes from "./routes/movie_router.js";
+import rentedRoutes from "./routes/rented_router.js";
+import dotenv from "dotenv";
+
+dotenv.config();
+connectDB();
 
 const app = express();
-const port = process.env.API_PORT
+const PORT = process.env.PORT || 3000;
+
 app.use(express.json());
 
-app.use("/user", user_router);
-app.use("/movie", movie_router);
-app.use("/rented", rented_router)
+app.use("/api/user", userRoutes);
+app.use("/api/movies", movieRoutes);
+app.use("/api/rented", rentedRoutes);
 
-app.listen(port, () => console.log("Servidor executando na porta " + port ));
+app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));

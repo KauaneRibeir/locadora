@@ -1,108 +1,56 @@
-import User from "../models/user_model.js";
-import jwtService from "../services/jwt_service.js";
 
-export const store = async (req, res) => {
-  try {
-    const content = await User.create(req.body);
-    res.status(201).json(content);
-  } catch (error) {
-    res.status(400).send(error);
-  }
-};
-
-export const index = async (req, res) => {
-  try {
-    const content = await User.find(req.query).exec();
-    res.json(content);
-  } catch (error) {
-    res.status(400).send(error);
-  }
-};
-
-export const show = async (req, res) => {
-  try {
-    const content = await User.findById(req.params.id).exec();
-    res.json(content);
-  } catch (error) {
-    res.status(400).send(error);
-  }
-};
-
-export const update = async (req, res) => {
-  try {
-    const content = await User.findByIdAndUpdate(
-      req.params.id,
-      req.body
-    ).exec();
-    res.json(content);
-  } catch (error) {
-    res.status(400).send(error);
-  }
-};
-
-export const destroy = async (req, res) => {
-  try {
-    const content = await User.findByIdAndDelete(req.params.id).exec();
-    res.json(content);
-  } catch (error) {
-    res.status(400).send(error);
-  }
-};
+import User from '../models/user_model.js';
+import jwtService from '../services/jwt_service.js';
 
 export const signup = async (req, res) => {
   try {
+    if (!req.body.name || !req.body.birthday_date || !req.body.email || !req.body.password) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
     const user = await User.create({
-      nome: req.body.nome,
-      email: req.body.email,
-      password: req.body.password,
-      tipo: req.body.tipo,
-      phones: req.body.phones,
-      addres: req.body.addres,
-      house_number: req.body.house_number
+        name: req.body.name,
+        birthday_date: req.body.birthday_date,
+        email: req.body.email,
+        password: req.body.password,
+        permission_type: req.body.permission_type || "USER",
+        phones: req.body.phones,
+        address: req.body.address,
+        house_number: req.body.house_number,
     });
 
-    const token = jwtService.generateAccessToken({
-      tipo: user.tipo,
-      email: user.email,
-      _id: user._id,
-    });
-
-    // Devolve o token de acesso
-    res.status(201).json({
-      token,
-    });
-
+    res.status(201).json(user);
   } catch (error) {
-    console.log(error)
-    res.status(400).send(error);
+    res.status(400).json({ error: error.message });
   }
 };
 
+  //validando se existe o usuário cadastrado
 export const login = async (req, res) => {
   try {
-    const user = await User.findOne({
-      email: req.body.email,
-    }).exec();
-
-    //validando se existe o usuário cadastrado
-    if (user && (await user.senhaCorreta(req.body.password))) {
-      const token = jwtService.generateAccessToken({
-        tipo: user.tipo,
-        email: user.email,
-        _id: user._id,
-      });
-
-      // Devolve o token de acesso
-      res.json({
-        token,
-      });
-    } else {
-
-      res.status(404).json("Email ou senha inválidos");
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid email or password' });
     }
 
+    const isPasswordValid = await user.isValidPassword(req.body.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ error: 'Invalid email or password' });
+    }
+
+      // Devolve o token de acess
+    const token = jwtService.generateAccessToken({ id: user._id, permission_type: user.permission_type });
+
+    // Devolve o token de acesso
+    res.json({
+      token,
+      user: {
+        name: user.name,
+        permission_type: user.permission_type,
+        email: user.email,
+      },
+    });
   } catch (error) {
-    console.log(error)
-    res.status(400).send(error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };

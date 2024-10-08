@@ -1,27 +1,25 @@
-const axios = require("axios")
+import axios from "axios";
 
-const cep_endereco = (req, res, next) => {
+async function viaCep(req, res, next) {
+  const { cep } = req.body;
 
-   req.body.cep = req.body.cep.replaceAll(".", "").replaceAll("-", "")
-   if (
-      req.body.cep.length == 8 &&
-      !isNaN(Number(req.body.cep))
-   ) {
+  if (!cep) {
+    return res.status(400).json({ error: "CEP is required" });
+  }
 
-      axios.get(`https://viacep.com.br/ws/${req.body.cep}/json/`)
-         .then(resposta => {
-             
-             delete req.body.cep
-             
-             req.body.cep = resposta.data
+  try {
+    const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
 
-            next()
-         })
-   } else {
-      res.status(400).json()
+    if (response.data.erro) {
+      return res.status(400).json({ error: "Invalid CEP" });
+    }
 
-   }
-}
+    req.body.address = `${response.data.logradouro}, ${response.data.bairro}, ${response.data.localidade} - ${response.data.uf}`;
 
-module.exports = cep_endereco
+    next();
+  } catch (error) {
+    return res.status(500).json({ error: "Error fetching address from ViaCEP" });
+  }
+};
 
+export default viaCep;

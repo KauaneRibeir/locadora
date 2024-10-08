@@ -1,7 +1,6 @@
 {
   "name": "locadora",
   "version": "6.10.2",
-
   "type": "module",
   "description": "autenticação com node",
   "main": "src/app.js",
@@ -14,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.5",
     "express": "^4.21.0",

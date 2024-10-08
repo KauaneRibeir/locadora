@@ -1,40 +1,31 @@
-import db from "../config/db.js";
+
+import { Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 
-const userSchema = new db.Schema({
-  nome: {
+const userSchema = new Schema({
+  name: { type: String, required: true },
+  birthday_date: { type: Date, required: true },
+  email: {
     type: String,
-    required: true,
-  },
-   email: {
-    type: String,
-    required: true,
     unique: true,
-  },
-  password: {
-    type: String,
     required: true,
-    minLength: 5,
+    validate: {
+      validator: (v) => /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(v),
+      message: "Invalid email format",
+    },
   },
-  tipo: {
+  password: { type: String, required: true },
+  permission_type: {
     type: String,
-    enum: ["ADM", "USU"],
+    enum: ["USER", "ADMIN"],
+    default: "USER",
     required: true,
-    default: "USU",
   },
-  phones: [{
-type: Number,
-required: true,
-  }],
-  addres: {
-type: String,
-required:true,
-},
-house_number: {
-type: Number,
-required: true
-},
+  phones: { type: [String] },
+  address: { type: String },
+  house_number: { type: String },
 });
+
 
 // não precisa do next nas versões mais novas do mongoose
 //é um middleware no Mongoose executa algo antes de alguma ação, nesse caso executa antes do save, e executa a criptografia da senha
@@ -47,10 +38,10 @@ userSchema.pre("save", async function () {
 
 // Define um método para a classe
 //no mongoose permite adicionar métodos personalizados, nesse caso, é estou criando e usando função senhaCorreta no userSchema
-userSchema.methods.senhaCorreta = async function (senha) {
-  return await bcrypt.compare(senha, this.password);
+userSchema.methods.isValidPassword = async function (password) {
+  return await bcrypt.compare(password, this.password);
 };
 
-const User = db.model("User", userSchema);
+const User = model("User", userSchema);
 
 export default User;
